@@ -23,10 +23,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-        strategy:
-          matrix:
-            ruby:
-              - '3.3.0'
       - name: Install dependencies
         run: |
           gem install bundler
