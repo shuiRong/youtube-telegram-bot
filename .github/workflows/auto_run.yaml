@@ -3,9 +3,9 @@ name: Auto Run
 on:
   schedule:
     - cron: '0 * * * *'
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   build:
@@ -30,5 +30,6 @@ jobs:
           ruby bin/main.rb
         env:
           TELEGRAM_BOT_TOKEN: ${{secrets.TELEGRAM_BOT_TOKEN}}
+          TELEGRAM_CHANNEL_ID: ${{secrets.TELEGRAM_CHANNEL_ID}}
           YOUTUBE_API_KEY: ${{secrets.YOUTUBE_API_KEY}}
           YOUTUBE_CHANNEL_ID: ${{vars.YOUTUBE_CHANNEL_ID}}

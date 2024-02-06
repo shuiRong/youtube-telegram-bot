@@ -7,9 +7,18 @@ class Bot
     token = ENV["TELEGRAM_BOT_TOKEN"]
 
     Telegram::Bot::Client.run(token) do |bot|
-      bot.api.send_message(chat_id: 1479895880, text: "测试 123", date: Time.new)
-
       search(bot)
+
+      # bot.listen do |message|
+      #   case message
+      #   when Telegram::Bot::Types::Message
+      #     puts message.chat.id
+      #   when Telegram::Bot::Types::PollAnswer
+      #     # process_poll_answer(message)
+      #   else
+      #     bot.logger.info("Not sure what to do with this type of message")
+      #   end
+      # end
     end
   end
 end

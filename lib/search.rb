@@ -56,7 +56,8 @@ def search(bot)
   # 获取当初的时间戳
   now = Time.now.to_i
 
-  channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(5).each do |video|
+  # 数组顺序反转一下
+  channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(20).reverse.each do |video|
     # 如果视频时间戳在当前的一个小时之内
     # 下载该视频的音频文件到本地，然后发送到telegram
     if now - video.published_at.to_i < 3600
@@ -78,7 +79,7 @@ def search(bot)
         YouTube链接：https://www.youtube.com/watch?v=#{video.id}
       HEREDOC
 
-      bot.api.send_audio(chat_id: 1479895880, duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
+      bot.api.send_audio(chat_id: ENV["TELEGRAM_CHANNEL_ID"], duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
     end
   end
 end
