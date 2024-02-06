@@ -18,13 +18,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: false # runs 'bundle install' and caches installed gems automatically
 
       - name: Run
         run: |
           gem install bundler
           bundle install
-          gem list telegram
+          gem list telegram dotenv
           bundle exec bin/main.rb
           ruby bin/main.rb
         env:
