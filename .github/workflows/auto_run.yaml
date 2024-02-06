@@ -1,5 +1,8 @@
 name: Auto Run
 
+environment:
+  name: prd
+
 on:
   schedule:
     - cron: '0 * * * *'
