@@ -54,6 +54,7 @@ GEM
     net-http (0.4.1)
       uri
     net-http-persistent (2.9.4)
+    os (1.1.4)
     ruby2_keywords (0.0.5)
     telegram-bot-ruby (2.0.0)
       dry-struct (~> 1.6)
@@ -75,6 +76,7 @@ DEPENDENCIES
   dotenv
   json
   net-http-persistent (~> 2.9, >= 2.9.4)
+  os
   telegram-bot-ruby
   yt (~> 0.32.0)
 
@@ -102,6 +104,7 @@ CHECKSUMS
   mutex_m (0.2.0) sha256=b6ef0c6c842ede846f2ec0ade9e266b1a9dac0bc151682b04835e8ebd54840d5
   net-http (0.4.1) sha256=a96efc5ea18bcb9715e24dda4159d10f67ff0345c8a980d04630028055b2c282
   net-http-persistent (2.9.4) sha256=24274d207ffe66222ef70c78a052c7ea6e66b4ff21e2e8a99e3335d095822ef9
+  os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ruby2_keywords (0.0.5) sha256=ffd13740c573b7301cf7a2e61fc857b2a8e3d3aff32545d6f8300d8bae10e3ef
   telegram-bot-ruby (2.0.0) sha256=29808b605860dc078f4bb2481a6d3fc5134cfccedb63589f295d340304a99cba
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
