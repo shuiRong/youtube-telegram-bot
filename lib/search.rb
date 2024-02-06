@@ -78,7 +78,7 @@ def search(bot)
         YouTube链接：https://www.youtube.com/watch?v=#{video.id}
       HEREDOC
 
-      # bot.api.send_audio(chat_id: 1479895880, duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
+      bot.api.send_audio(chat_id: 1479895880, duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
     end
   end
 end
