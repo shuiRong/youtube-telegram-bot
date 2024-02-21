@@ -23,6 +23,13 @@ def get_video_duration(video_id)
   # 使用正则表达式匹配Duration的具体数据
   duration_match = shell_output.match(/Duration:\s*(\d+h)?(\d+m)?(\d+s)?/)
 
+  if(duration_match.nil?)
+    puts "duration_match is nil"
+    puts "duration_match: #{duration_match}"
+    puts "shell_output: #{shell_output}"
+    return 0
+  end
+
   # 提取匹配到的数据
   hours = duration_match[1].to_i if duration_match[1]
   minutes = duration_match[2].to_i if duration_match[2]
@@ -31,8 +38,6 @@ def get_video_duration(video_id)
   # 把时长转换成秒
   # hours 可能为nil
   duration = (hours || 0) * 3600 + (minutes || 0) * 60 + (seconds || 0)
-
-  puts duration
 
   duration
 end
@@ -62,6 +67,12 @@ def search(bot)
     # 下载该视频的音频文件到本地，然后发送到telegram
     if now - video.published_at.to_i < 3600
       video_title = video.title
+
+      # # 如果标题中包含「中国住房制度公营」，推出循环
+      # if !video_title.include?("中国经济内爆")
+      #   next
+      # end
+
       title = get_video_title(video_title)
 
       audio_duration = get_video_duration(video.id)
