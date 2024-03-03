@@ -2,11 +2,15 @@ require "telegram/bot"
 require "dotenv/load"
 require_relative "search.rb"
 
+$bot = nil
+
 class Bot
   def initialize
     token = ENV["TELEGRAM_BOT_TOKEN"]
 
     Telegram::Bot::Client.run(token) do |bot|
+      $bot = bot
+
       bot.listen do |message|
         case message
         when Telegram::Bot::Types::Message
