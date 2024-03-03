@@ -27,7 +27,7 @@ jobs:
           gem install bundler
           bundle install
           gem list telegram dotenv
-          ruby bin/main.rb
+          ruby bin/search_upload.rb
         env:
           TELEGRAM_BOT_TOKEN: ${{secrets.TELEGRAM_BOT_TOKEN}}
           TELEGRAM_CHANNEL_ID: ${{secrets.TELEGRAM_CHANNEL_ID}}

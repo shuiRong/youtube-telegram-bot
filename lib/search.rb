@@ -7,17 +7,15 @@ Yt.configure do |config|
   config.log_level = "devel"
 end
 
-def get_video_title(title)
+def transform_video_title(title)
   # 通过正则替换标题中的于:/和空白字符
   title = title.gsub(/[:\/\s]/, "_")
-
-  puts title
 
   title
 end
 
-def get_video_duration(video_id)
-  shell_output = `#{get_youtube_dl_file} info #{video_id}`
+def get_video_duration(video_id, output)
+  shell_output = output || `#{get_youtube_dl_file} info #{video_id}`
   # 通过正则在多行文本中匹配时长字符串（类似：1h2m22s）
   # P.S. Duration也可能小于1小时，只需要返回时长的小时、分钟、秒部分字符串
   # 使用正则表达式匹配Duration的具体数据
@@ -42,15 +40,28 @@ def get_video_duration(video_id)
   duration
 end
 
+def get_video_title(video_url)
+  shell_output = `#{get_youtube_dl_file} info #{video_url}`
+  puts "shell_output: #{shell_output}"
+  video_title = shell_output.match(/Title:\s*(\S.*)/)
+  puts "video_title: #{video_title}"
+
+  if(video_title.nil?)
+    puts "video_title is nil. shell_output: #{shell_output}"
+    return 'video'
+  end
+
+  # trim
+  video_title = video_title[1].strip
+  return [video_title, shell_output]
+end
+
 def get_video_path(video_id, title)
   # 下载视频到本地
   output = `#{get_youtube_dl_file} download -q 139 #{video_id} -d ./tmp -o #{title}.m4a`
-  puts output
 
   # 获取下载的视频文件路径
   audio_path = File.expand_path("./tmp/#{title}.m4a")
-
-  puts audio_path
 
   audio_path
 end
@@ -68,12 +79,11 @@ def search(bot)
     if now - video.published_at.to_i < 3600
       video_title = video.title
 
-      # # 如果标题中包含「中国住房制度公营」，推出循环
-      # if !video_title.include?("中国经济内爆")
+      # if !video_title.include?("")
       #   next
       # end
 
-      title = get_video_title(video_title)
+      title = transform_video_title(video_title)
 
       audio_duration = get_video_duration(video.id)
 
@@ -93,4 +103,31 @@ def search(bot)
       bot.api.send_audio(chat_id: ENV["TELEGRAM_CHANNEL_ID"], duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
     end
   end
+end
+
+
+def search_by_url(bot, video_url, chat_id)
+  res = get_video_title(video_url)
+  title = res[0]
+  output = res[1]
+  video_title = transform_video_title(title)
+  audio_duration = get_video_duration(video_url, output)
+
+  audio_path = get_video_path(video_url, video_title)
+
+  # 告诉发消息的用户，检测文件是否存在
+  if !File.exist?(audio_path)
+    bot.api.send_message(chat_id: chat_id, text: "下载失败，本地文件不存在 #{video_url}")
+    return
+  end
+  
+  
+  # 多行字符，并且使用 video_title 变量
+  caption = <<~HEREDOC
+    #{video_title}
+
+    YouTube链接：#{video_url}
+  HEREDOC
+
+  bot.api.send_audio(chat_id: ENV["TELEGRAM_CHANNEL_ID"], duration: audio_duration, title: video_title, performer: "王剑", caption: caption, audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
 end
