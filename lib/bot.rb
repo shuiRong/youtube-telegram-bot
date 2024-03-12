@@ -20,6 +20,7 @@ class Bot
           end
 
           if message.text.include?("youtube.com")
+            bot.api.send_message(chat_id: message.chat.id, text: "已收到链接，正在处理中，2分钟内没有上传则说明失败。（不见本消息，说明Bot程序没有在运行）")
             search_by_url(bot, message, message.chat.id)
           end
         when Telegram::Bot::Types::PollAnswer

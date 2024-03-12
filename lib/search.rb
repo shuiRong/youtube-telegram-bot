@@ -1,6 +1,5 @@
 require "yt"
 require "dotenv/load"
-require_relative "youtube_dl"
 
 Yt.configure do |config|
   config.api_key = ENV["YOUTUBE_API_KEY"]
@@ -15,7 +14,7 @@ def transform_video_title(title)
 end
 
 def get_video_duration(video_id, output)
-  shell_output = output || `#{get_youtube_dl_file} info #{video_id}`
+  shell_output = output || `youtubedr info #{video_id}`
   # 通过正则在多行文本中匹配时长字符串（类似：1h2m22s）
   # P.S. Duration也可能小于1小时，只需要返回时长的小时、分钟、秒部分字符串
   # 使用正则表达式匹配Duration的具体数据
@@ -41,7 +40,8 @@ def get_video_duration(video_id, output)
 end
 
 def get_video_title(video_url)
-  shell_output = `#{get_youtube_dl_file} info #{video_url}`
+  puts "video_url #{video_url}"
+  shell_output = `youtubedr info #{video_url}`
   puts "shell_output: #{shell_output}"
   video_title = shell_output.match(/Title:\s*(\S.*)/)
   puts "video_title: #{video_title}"
@@ -58,7 +58,7 @@ end
 
 def get_video_path(video_id, title)
   # 下载视频到本地
-  output = `#{get_youtube_dl_file} download -q 139 #{video_id} -d ./tmp -o #{title}.m4a`
+  output = `youtubedr download -q 139 #{video_id} -d ./tmp -o #{title}.m4a`
 
   # 获取下载的视频文件路径
   audio_path = File.expand_path("./tmp/#{title}.m4a")
@@ -74,6 +74,9 @@ def search(bot)
 
   # 数组顺序反转一下
   channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(20).reverse.each do |video|
+
+    puts video.title
+
     # 如果视频时间戳在当前的一个小时之内
     # 下载该视频的音频文件到本地，然后发送到telegram
     if now - video.published_at.to_i < 3600
