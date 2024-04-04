@@ -58,7 +58,7 @@ end
 
 def get_video_path(video_id, title)
   # 下载视频到本地
-  output = `youtubedr download -q 139 #{video_id} -d ./tmp -o #{title}.m4a`
+  output = `youtubedr download -d ./tmp -o #{title}.m4a -q 139 #{video_id}`
 
   # 获取下载的视频文件路径
   audio_path = File.expand_path("./tmp/#{title}.m4a")
