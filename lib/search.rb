@@ -14,13 +14,13 @@ def transform_video_title(title)
 end
 
 def get_video_duration(video_id, output)
-  shell_output = output || `youtubedr info #{video_id}`
+  shell_output = output.empty? ? `youtubedr info #{video_id}` : output
   # 通过正则在多行文本中匹配时长字符串（类似：1h2m22s）
   # P.S. Duration也可能小于1小时，只需要返回时长的小时、分钟、秒部分字符串
   # 使用正则表达式匹配Duration的具体数据
   duration_match = shell_output.match(/Duration:\s*(\d+h)?(\d+m)?(\d+s)?/)
 
-  if(duration_match.nil?)
+  if (duration_match.nil?)
     puts "duration_match is nil"
     puts "duration_match: #{duration_match}"
     puts "shell_output: #{shell_output}"
@@ -46,9 +46,9 @@ def get_video_title(video_url)
   video_title = shell_output.match(/Title:\s*(\S.*)/)
   puts "video_title: #{video_title}"
 
-  if(video_title.nil?)
+  if (video_title.nil?)
     puts "video_title is nil. shell_output: #{shell_output}"
-    return 'video'
+    return "video"
   end
 
   # trim
@@ -74,7 +74,6 @@ def search(bot)
 
   # 数组顺序反转一下
   channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(20).reverse.each do |video|
-
     puts video.title
 
     # 如果视频时间戳在当前的一个小时之内
@@ -88,7 +87,7 @@ def search(bot)
 
       title = transform_video_title(video_title)
 
-      audio_duration = get_video_duration(video.id)
+      audio_duration = get_video_duration(video.id, "")
 
       audio_path = get_video_path(video.id, title)
 
@@ -103,11 +102,10 @@ def search(bot)
         YouTube链接：https://www.youtube.com/watch?v=#{video.id}
       HEREDOC
 
-      bot.api.send_audio(chat_id: ENV["TELEGRAM_CHANNEL_ID"], duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
+      # bot.api.send_audio(chat_id: ENV["TELEGRAM_CHANNEL_ID"], duration: audio_duration, title: video_title, performer: "王剑", caption: caption, thumbnail: video.thumbnail_url(:medium), audio: Faraday::UploadIO.new(audio_path, "audio/mpeg"))
     end
   end
 end
-
 
 def search_by_url(bot, video_url, chat_id)
   res = get_video_title(video_url)
@@ -123,8 +121,7 @@ def search_by_url(bot, video_url, chat_id)
     bot.api.send_message(chat_id: chat_id, text: "下载失败，本地文件不存在 #{video_url}")
     return
   end
-  
-  
+
   # 多行字符，并且使用 video_title 变量
   caption = <<~HEREDOC
     #{video_title}
