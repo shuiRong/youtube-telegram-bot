@@ -40,11 +40,8 @@ def get_video_duration(video_id, output)
 end
 
 def get_video_title(video_url)
-  puts "video_url #{video_url}"
   shell_output = `youtubedr info #{video_url}`
-  puts "shell_output: #{shell_output}"
   video_title = shell_output.match(/Title:\s*(\S.*)/)
-  puts "video_title: #{video_title}"
 
   if (video_title.nil?)
     puts "video_title is nil. shell_output: #{shell_output}"
@@ -73,12 +70,10 @@ def search(bot)
   now = Time.now.to_i
 
   # 数组顺序反转一下
-  channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(20).reverse.each do |video|
-    puts video.title
-
+  channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(5).reverse.each do |video|
     # 如果视频时间戳在当前的一个小时之内
     # 下载该视频的音频文件到本地，然后发送到telegram
-    if now - video.published_at.to_i < 3600
+    if now - video.published_at.to_i < 60 * 60
       video_title = video.title
 
       # if !video_title.include?("")
