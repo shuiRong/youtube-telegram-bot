@@ -9,5 +9,4 @@ gem "yt", "~> 0.32.0"
 gem "dotenv"
 gem "os"
 gem "rails"
-gem 'timers'
 gem 'async'

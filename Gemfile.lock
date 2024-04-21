@@ -245,7 +245,6 @@ DEPENDENCIES
   os
   rails
   telegram-bot-ruby
-  timers
   yt (~> 0.32.0)
 
 CHECKSUMS
