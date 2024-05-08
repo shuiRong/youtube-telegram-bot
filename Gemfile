@@ -10,3 +10,4 @@ gem "dotenv"
 gem "os"
 gem "rails"
 gem 'async'
+gem 'socksify'

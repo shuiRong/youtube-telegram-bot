@@ -14,7 +14,7 @@ def transform_video_title(title)
 end
 
 def get_video_duration(video_id, output)
-  shell_output = output.empty? ? `youtubedr info #{video_id}` : output
+  shell_output = output.empty? ? `youtubedr info "#{video_id}"` : output
   # 通过正则在多行文本中匹配时长字符串（类似：1h2m22s）
   # P.S. Duration也可能小于1小时，只需要返回时长的小时、分钟、秒部分字符串
   # 使用正则表达式匹配Duration的具体数据
@@ -40,7 +40,7 @@ def get_video_duration(video_id, output)
 end
 
 def get_video_title(video_url)
-  shell_output = `youtubedr info #{video_url}`
+  shell_output = `youtubedr info "#{video_url}"`
   video_title = shell_output.match(/Title:\s*(\S.*)/)
 
   if (video_title.nil?)
@@ -55,7 +55,7 @@ end
 
 def get_video_path(video_id, title)
   # 下载视频到本地
-  output = `youtubedr download -d ./tmp -o #{title}.m4a -q 139 #{video_id}`
+  output = `youtubedr download -d ./tmp -o "#{title}.m4a" -q 139 "#{video_id}"`
 
   # 获取下载的视频文件路径
   audio_path = File.expand_path("./tmp/#{title}.m4a")
@@ -73,7 +73,8 @@ def search(bot)
   channel.videos.where(order: "date", eventType: "completed", part: "id,snippet").first(5).reverse.each do |video|
     # 如果视频时间戳在当前的一个小时之内
     # 下载该视频的音频文件到本地，然后发送到telegram
-    if now - video.published_at.to_i < 60 * 60
+    hour = 60 * 60
+    if now - video.published_at.to_i < hour
       video_title = video.title
 
       # if !video_title.include?("")
